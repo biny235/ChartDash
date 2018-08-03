@@ -1,0 +1,10 @@
+.container{
+  padding: 15px;
+  
+}
+
+.main-form{
+  border: .5px solid black;
+  border-radius: 15px;
+  padding: 15px
+}
