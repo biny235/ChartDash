@@ -8,11 +8,14 @@ class Form extends React.Component{
       showFile: true,
       fileName: '',
       validJSON: true,
-      fileType: false
+      fileType: false,
+      file: '',
+      JSONData: {}
     }
     this.onClick = this.onClick.bind(this)
     this.selectFile = this.selectFile.bind(this)
     this.checkJSON = this.checkJSON.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
   }
 
   onClick(){
@@ -23,21 +26,29 @@ class Form extends React.Component{
     const file = ev.target.files[0]
     const fileName = file.name
     const fileType = file.type === 'application/json'
-    this.setState({fileName, fileType})
+    this.setState({fileName, fileType, file})
 
   }
   checkJSON(ev){
+    let JSONData
     try {
-      JSON.parse(ev.target.value);
+      JSONData = JSON.parse(ev.target.value);
     } catch (e) {
-      console.log('in Here')
       return this.setState({validJSON: false});
     }
-    this.setState({validJSON: true})
+    this.setState({validJSON: true, JSONData})
   }
+
   onSubmit(ev){
     ev.preventDefault();
-    axios.post('/api/analyze')
+    const {showFile, file, JSONData} = this.state;
+    let formData = new FormData();
+    if(showFile && file){
+      formData.append("file", file)
+    }else{
+      formData = JSONData
+    }
+    axios.post(`/api/analyze/${showFile ? 'file' : ''}`, formData)
   }
 
   render(){
