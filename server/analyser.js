@@ -1,59 +1,68 @@
-const analyser = (data)=>{
-  const analysis = data.results.reduce((memo, user)=>{
-    memo[user.gender]++
-    memo.total++
-    if(user.name.first[0].toUpperCase() > 'M'){
-      memo.firstNZ++
-    }else{
-      memo.firstAM++ 
+const analyser = data => {
+  const analysis = data.results.reduce(
+    (memo, user) => {
+      memo[user.gender]++;
+      memo.total++;
+      if (checkName(user.name.first)) {
+        memo.firstNZ++;
+      } else {
+        memo.firstAM++;
+      }
+      if (checkName(user.name.last)) {
+        memo.lastNZ++;
+      } else {
+        memo.lastAM++;
+      }
+      if (!memo.states[user.location.state]) memo.states[user.location.state] = { male: 0, female: 0 };
+      memo.states[user.location.state][user.gender]++;
+      const { age } = user.dob;
+      memo.ages = agesSplit(memo.ages, age);
+      return memo;
+    },
+    {
+      total: 0,
+      firstAM: 0,
+      firstNZ: 0,
+      lastAM: 0,
+      lastNZ: 0,
+      male: 0,
+      female: 0,
+      states: {},
+      ages: {
+        '0-20': 0,
+        '21-40': 0,
+        '41-60': 0,
+        '61-80': 0,
+        '81-100': 0,
+        '100+': 0
+      }
     }
-    if(user.name.last[0].toUpperCase() > 'M'){
-      memo.lastNZ++
-    }else{
-      memo.lastAM++ 
-    }
-    if(!memo.states[user.location.state]) memo.states[user.location.state] = {male:0, female:0}
-    memo.states[user.location.state][user.gender]++
-    const {age} = user.dob
-    if(age >= 100){
-      memo.ages['100+']++
-    }else if(age >= 81){
-      memo.ages['81-100']++
-    }else if(age >= 61){
-      memo.ages['61-80']++
-    }else if(age >= 41){
-      memo.ages['41-60']++
-    }else if(age >= 21){
-      memo.ages['21-40']++
-    }else{
-      memo.ages['0-20']++
-    }
-    
-    
-    return memo
-  },{total: 0, 
-    firstAM: 0, 
-    firstNZ: 0,
-    lastAM: 0,
-    lastNZ: 0,
-    male: 0,
-    female: 0,
-    states: {},
-    ages: {
-      '0-20': 0,
-      '21-40': 0, 
-      '41-60': 0, 
-      '61-80': 0, 
-      '81-100': 0,
-      '100+': 0
-    }
-  })
+  );
+  return analysis;
+};
 
-  return analysis
+const checkName = (name)=>{
+  if (name[0].toUpperCase() > 'M') return true
 }
 
-module.exports = analyser
+const agesSplit = (currentAges, age) => {
+  if (age >= 100) {
+    currentAges['100+']++;
+  } else if (age >= 81) {
+    currentAges['81-100']++;
+  } else if (age >= 61) {
+    currentAges['61-80']++;
+  } else if (age >= 41) {
+    currentAges['41-60']++;
+  } else if (age >= 21) {
+    currentAges['21-40']++;
+  } else {
+    currentAges['0-20']++;
+  }
+  return currentAges
+}
 
+module.exports = analyser;
 
 // 1. Percentage female versus male -
 // 2. Percentage of first names that start with A‐M versus N‐Z-
