@@ -8,3 +8,9 @@
   border-radius: 15px;
   padding: 15px
 }
+
+.chart-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+}
