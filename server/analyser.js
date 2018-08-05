@@ -16,17 +16,17 @@ const analyser = (data)=>{
     memo.states[user.location.state][user.gender]++
     const {age} = user.dob
     if(age >= 100){
-      memo.ages.over100++
+      memo.ages['100+']++
     }else if(age >= 81){
-      memo.ages.under100++
+      memo.ages['81-100']++
     }else if(age >= 61){
-      memo.ages.under80++
+      memo.ages['61-80']++
     }else if(age >= 41){
-      memo.ages.under60++
+      memo.ages['41-60']++
     }else if(age >= 21){
-      memo.ages.under40++
+      memo.ages['21-40']++
     }else{
-      memo.ages.under20++
+      memo.ages['0-20']++
     }
     
     
@@ -40,12 +40,12 @@ const analyser = (data)=>{
     female: 0,
     states: {},
     ages: {
-      under20: 0,
-      under40: 0, 
-      under60: 0, 
-      under80: 0, 
-      under100: 0,
-      over100: 0
+      '0-20': 0,
+      '21-40': 0, 
+      '41-60': 0, 
+      '61-80': 0, 
+      '81-100': 0,
+      '100+': 0
     }
   })
 
