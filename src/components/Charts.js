@@ -17,34 +17,44 @@ class Charts extends React.Component {
       ages: [],
       mostPopulusStatesFemale: [],
       mostPopulusStatesMale: [],
-      mostPopulusStates: []
+      mostPopulusStates: [],
+      fileType: ''
     };
+    this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
     this.clear = this.clear.bind(this);
   }
   componentDidMount() {
     let data = window.localStorage.getItem('data');
-    try{
-      data = JSON.parse(data)
-    }catch(error){
-      console.log(error)
+    try {
+      data = JSON.parse(data);
+    } catch (error) {
+      console.log(error);
     }
     this.setState(data);
-
   }
+  onChange(ev) {
+    this.setState({ fileType: ev.target.value });
+  }
+
   onClick() {
+    const { fileType } = this.state;
+    const data = JSON.parse(window.localStorage.getItem('data'))
     axios
-      .post('/api/analyze/JSON/download/json', { data: this.state })
-      .then(res => {
-        if('json'){
-          fileDownload(JSON.stringify(res.data), `analysis.json`)
+      .post(`/api/analyze/JSON/download/${fileType}`, {data})
+      .then(res => res.data)
+      .then(file => {
+        if (fileType === 'json') {
+          fileDownload(JSON.stringify(file, null, "\t"), `analysis.json`);
+        } else {
+          fileDownload(file, `analysis.${fileType}`);
         }
-      });
+      })
+      .catch(err => console.log(err));
   }
-  clear(){
-    window.localStorage.clear()
-    this.props.history.push('/')
-
+  clear() {
+    window.localStorage.clear();
+    this.props.history.push('/');
   }
 
   render() {
@@ -59,9 +69,10 @@ class Charts extends React.Component {
       lastNZ,
       male,
       female,
-      total
+      total,
+      fileType
     } = this.state;
-    const { onClick, clear } = this;
+    const { onClick, clear, onChange } = this;
     return (
       <div className='chart-grid'>
         <div>
@@ -70,13 +81,23 @@ class Charts extends React.Component {
         <div>
           <h2>Total People: {total}</h2>
         </div>
-        <div>
-          <div className='btn-group'>
-            <button type='button' className='btn btn-success' onClick={onClick}>
-              Download Data
+        <div className='input-group mb-3'>
+          <select className='custom-select' onChange={onChange}>
+            <option value='' defaultValue>File Type</option>
+            <option value='txt'>.txt</option>
+            <option value='xml'>.xml</option>
+            <option value='json'>.JSON</option>
+          </select>
+          <div className='input-group-append'>
+            <button
+              type='button'
+              className='btn btn-sm btn-success'
+              onClick={onClick}
+              disabled={!fileType}>
+              Download
             </button>
             <button type='button' className='btn btn-danger' onClick={clear}>
-              Clear
+              Clear Data
             </button>
           </div>
         </div>
@@ -140,7 +161,7 @@ class Charts extends React.Component {
               title: 'Age Breakdown'
             }}
           />
-          </div>
+        </div>
       </div>
     );
   }
