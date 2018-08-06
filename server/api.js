@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const path = require('path');
 
 // Processes uploaded files
 const multer  = require('multer');
@@ -8,9 +9,7 @@ const fs = require('fs');
 //analyser
 const analyser = require('./analyser');
 
-//process XML
-const jsonxml = require('jsontoxml');
-const xmlFormat = require('xml-formatter');
+const fileHandler = require('./fileHandler');
 
 router.post('/analyze/file', upload.single('file'), (req, res, next)=>{
   const {file} = req;
@@ -30,13 +29,10 @@ router.post('/analyze/JSON', (req, res, next)=>{
 })
 
 router.post('/analyze/JSON/download/:type', (req, res, next)=>{
-  let {data} = req.body;
-  let xml = jsonxml({node:'data', data});
-  let formattedXml = xmlFormat(xml);
-  fs.writeFile('analysys.xml', (err, file)=>{
-    if(err) next(err);
-    res.download(path.join(__dirname, '../analysys.xml'));
-  })
+  let { data } = req.body;
+  let type = req.params.type;
+  fileHandler[type](data);
+  res.sendFile(path.join(__dirname, `../analysys.${type}`))
 })
 
 

@@ -34,7 +34,7 @@ const analyser = data => {
         '41-60': 0,
         '61-80': 0,
         '81-100': 0,
-        '100+': 0
+        'over100': 0
       }
     }
   );
@@ -54,7 +54,7 @@ const checkName = (name)=>{
 
 const agesSplit = (currentAges, age) => {
   if (age >= 100) {
-    currentAges['100+']++;
+    currentAges['over100']++;
   } else if (age >= 81) {
     currentAges['81-100']++;
   } else if (age >= 61) {

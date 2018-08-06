@@ -20,7 +20,7 @@ class Charts extends React.Component {
       mostPopulusStates: []
     };
     this.onClick = this.onClick.bind(this);
-    this.onClick = this.onClick.bind(this);
+    this.clear = this.clear.bind(this);
   }
   componentDidMount() {
     let data = window.localStorage.getItem('data');
@@ -34,8 +34,12 @@ class Charts extends React.Component {
   }
   onClick() {
     axios
-      .post('/api/analyze/JSON/download/txt', { data: this.state })
-      .then(res => fileDownload(res.data, `analysis.xml`));
+      .post('/api/analyze/JSON/download/json', { data: this.state })
+      .then(res => {
+        if('json'){
+          fileDownload(JSON.stringify(res.data), `analysis.json`)
+        }
+      });
   }
   clear(){
     window.localStorage.clear()
@@ -129,7 +133,7 @@ class Charts extends React.Component {
         />
         <div className='ages-chart'>
           <Chart
-            chartType='Bar'
+            chartType='ColumnChart'
             data={[['Age Range', 'Total'], ...ages]}
             height='170px'
             options={{
