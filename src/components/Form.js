@@ -47,7 +47,7 @@ class Form extends React.Component {
       formData = JSONData;
     }
     axios
-      .post(`/api/analyze/${showFile ? 'file' : ''}`, formData)
+      .post(`/api/analyze/${showFile ? 'file' : 'JSON'}`, formData)
       .then(res => res.data)
       .then(data => {
         window.localStorage.setItem('data', JSON.stringify(data));
