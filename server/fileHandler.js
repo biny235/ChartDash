@@ -13,8 +13,19 @@ const xml = (data)=>{
 const txt = (data) => {
   let lines = []
   Object.keys(data).forEach(key => {
-    //if its an array, need to format each index
-    if(Array.isArray(data[key])){
+    if(key === 'total'){
+      lines.push(data.total)
+    }else if(key === 'mostPopulousStates'){
+      //Most Populous State already has some calculations made for the tooltips. 
+      lines.push(`${key}:`)
+
+      data[key] = data[key].map(state => {
+
+        return lines.push(`  Total: ${state[1] + state[3]}; ${state[2]}; ${state[4]}`)
+
+      })
+    }else if(Array.isArray(data[key])){
+      //if its an array, need to format each index
       lines.push(`${key}:`)
 
       data[key] = data[key].forEach(item => {
@@ -50,11 +61,21 @@ const reformatter = (data) =>{
 
       data[key] = data[key]
 
+    }else if(key === 'mostPopulousStates'){
+      //Most Populous State already has some calculations made for the tooltips. 
+      data[key] = data[key].reduce((memo, state) => {
+        memo[state[0]] = {total: state[1] + state[3]}
+        memo[state[0]].male = (((state[1]  / memo[state[0]].total)).toFixed(2)) * 1
+        memo[state[0]].female = (((state[3]  * 1 / memo[state[0]].total)).toFixed(2)) * 1
+        return memo
+
+  }, {})
     }else if(Array.isArray(data[key])){
 
       data[key] = data[key].reduce((memo, item)=>{
 
         memo[item[0]] = `${((item[1] * 1 / data.total) * 100).toFixed(2)}%`
+
         return memo
 
       },{})

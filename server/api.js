@@ -29,7 +29,7 @@ router.post('/analyze/JSON', (req, res, next)=>{
   res.send(data)
 })
 
-router.post('/analyze/JSON/download/:type', (req, res, next)=>{
+router.post('/download/:type', (req, res, next)=>{
   let { data } = req.body;
   let type = req.params.type;
   fileHandler[type](data);

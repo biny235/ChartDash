@@ -15,8 +15,9 @@ const analyser = data => {
       } else {
         memo.lastAM++;
       }
-      if (!memo.states[user.location.state]) memo.states[user.location.state] = { male: 0, female: 0 };
+      if (!memo.states[user.location.state]) memo.states[user.location.state] = { male: 0, female: 0, total: 0 };
       memo.states[user.location.state][user.gender]++;
+      memo.states[user.location.state].total++;
       const { age } = user.dob;
       memo.ages = agesSplit(memo.ages, age);
       return memo;
@@ -40,11 +41,9 @@ const analyser = data => {
       }
     }
   );
-  analysis.mostPopulusStatesFemale = mostPopulusStatesFemale(analysis);
-  analysis.mostPopulusStatesMale = mostPopulusStatesMale(analysis);
-  analysis.mostPopulusStates = mostPopulusStates(analysis);
+  analysis.mostPopulousStates = mostPopulousStates(analysis.states);
   analysis.ages = ageBreakdown(analysis);
-  delete analysis.states
+  delete analysis.states;
   
   return analysis;
 };
@@ -71,30 +70,21 @@ const agesSplit = (currentAges, age) => {
 }
 
 
-const mostPopulusStates = (data) => {
-  let {states} = data;
+const mostPopulousStates = (states) => {
   let sortable = [];
   Object.keys(states).forEach(state =>
-    sortable.push([state, states[state].male + states[state].female])
+    sortable.push([state,
+      states[state].male,
+      //tooltip info
+      `Male: (${((states[state].male / states[state].total) * 100).toFixed(2)}%) ${states[state].male}`,
+      states[state].female, 
+      `Female: (${((states[state].female / states[state].total) * 100).toFixed(2)}%) ${states[state].female}`,
+      states[state].total ])
   );
-  return sortable.sort((a, b) => b[1] - a[1]).slice(0, 10);
+  return sortable.sort((a, b) => b[5] - a[5]).map(state=> state.slice(0, 5)).slice(0, 10);
+ 
 }
-const mostPopulusStatesMale = (data) => {
-  let { states } = data;
-  let sortable = [];
-  Object.keys(states).forEach(state =>
-    sortable.push([state, states[state].male])
-  );
-  return sortable.sort((a, b) => b[1] - a[1]).slice(0, 10);
-}
-const mostPopulusStatesFemale = (data)=> {
-  let { states } = data;
-  let sortable = [];
-  Object.keys(states).forEach(state =>
-    sortable.push([state, states[state].female])
-  );
-  return sortable.sort((a, b) => b[1] - a[1]).slice(0, 10);
-}
+
 
 const ageBreakdown = (data) => {
   let { ages } = data;

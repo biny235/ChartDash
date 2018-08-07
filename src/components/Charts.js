@@ -15,9 +15,9 @@ class Charts extends React.Component {
       male: 0,
       female: 0,
       ages: [],
-      mostPopulusStatesFemale: [],
-      mostPopulusStatesMale: [],
-      mostPopulusStates: [],
+      mostPopulousStatesFemale: [],
+      mostPopulousStatesMale: [],
+      mostPopulousStates: [],
       fileType: ''
     };
     this.onChange = this.onChange.bind(this);
@@ -41,7 +41,7 @@ class Charts extends React.Component {
     const { fileType } = this.state;
     const data = JSON.parse(window.localStorage.getItem('data'))
     axios
-      .post(`/api/analyze/JSON/download/${fileType}`, {data})
+      .post(`/api/download/${fileType}`, {data})
       .then(res => res.data)
       .then(file => {
         if (fileType === 'json') {
@@ -60,9 +60,9 @@ class Charts extends React.Component {
   render() {
     const {
       ages,
-      mostPopulusStates,
-      mostPopulusStatesMale,
-      mostPopulusStatesFemale,
+      mostPopulousStates,
+      mostPopulousStatesMale,
+      mostPopulousStatesFemale,
       firstAM,
       firstNZ,
       lastAM,
@@ -72,6 +72,7 @@ class Charts extends React.Component {
       total,
       fileType
     } = this.state;
+    console.log(mostPopulousStates)
     const { onClick, clear, onChange } = this;
     return (
       <div className='chart-grid'>
@@ -128,30 +129,18 @@ class Charts extends React.Component {
             pieHole: 0.2
           }}
         />
-        <Chart
-          chartType='ColumnChart'
-          data={[['State', ''], ...mostPopulusStates]}
-          height='150px'
-          options={{
-            title: 'Most Populus States'
-          }}
-        />
-        <Chart
-          chartType='ColumnChart'
-          data={[['State', ''], ...mostPopulusStatesMale]}
-          height='150px'
-          options={{
-            title: 'Most Populus States Male'
-          }}
-        />
-        <Chart
-          chartType='ColumnChart'
-          data={[['State', ''], ...mostPopulusStatesFemale]}
-          height='150px'
-          options={{
-            title: 'Most Populus States Female'
-          }}
-        />
+        <div className='ages-chart'>
+          <Chart
+            chartType='ColumnChart'
+            data={[['State','Male', {type: 'string', role: 'tooltip'}, 'Female', {type: 'string', role: 'tooltip'}], ...mostPopulousStates]}
+            height='230px'
+            options={{
+              title: 'Most Populous States',
+              isStacked: true,
+            }}
+          />
+        </div>
+        
         <div className='ages-chart'>
           <Chart
             chartType='ColumnChart'
