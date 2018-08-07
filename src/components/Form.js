@@ -34,7 +34,7 @@ class Form extends React.Component {
     try {
       JSONData = JSON.parse(ev.target.value);
     } catch (e) {
-      return this.setState({ error: "invalid JSON", validJSON: false });
+      return this.setState({ error: 'invalid JSON', validJSON: false });
     }
     this.setState({ validJSON: true, JSONData, error: '' });
   }
@@ -58,12 +58,19 @@ class Form extends React.Component {
         this.props.history.push('/charts');
       })
       .catch(error => {
-        this.setState({error, loading:false})
-      })
+        this.setState({ error, loading: false });
+      });
   }
 
   render() {
-    const { showFile, fileName, validJSON, isJSONFile, loading, error } = this.state;
+    const {
+      showFile,
+      fileName,
+      validJSON,
+      isJSONFile,
+      loading,
+      error
+    } = this.state;
     const { onClick, selectFile, checkJSON, onSubmit } = this;
     return (
       <div>

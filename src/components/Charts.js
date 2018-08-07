@@ -39,13 +39,13 @@ class Charts extends React.Component {
 
   onClick() {
     const { fileType } = this.state;
-    const data = JSON.parse(window.localStorage.getItem('data'))
+    const data = JSON.parse(window.localStorage.getItem('data'));
     axios
-      .post(`/api/download/${fileType}`, {data})
+      .post(`/api/download/${fileType}`, { data })
       .then(res => res.data)
       .then(file => {
         if (fileType === 'json') {
-          fileDownload(JSON.stringify(file, null, "\t"), `analysis.json`);
+          fileDownload(JSON.stringify(file, null, '\t'), `analysis.json`);
         } else {
           fileDownload(file, `analysis.${fileType}`);
         }
@@ -83,7 +83,9 @@ class Charts extends React.Component {
         </div>
         <div className='input-group mb-3'>
           <select className='custom-select' onChange={onChange}>
-            <option value='' defaultValue>File Type</option>
+            <option value='' defaultValue>
+              File Type
+            </option>
             <option value='txt'>.txt</option>
             <option value='xml'>.xml</option>
             <option value='json'>.JSON</option>
@@ -131,15 +133,24 @@ class Charts extends React.Component {
         <div className='ages-chart'>
           <Chart
             chartType='ColumnChart'
-            data={[['State','Male', {type: 'string', role: 'tooltip'}, 'Female', {type: 'string', role: 'tooltip'}], ...mostPopulousStates]}
+            data={[
+              [
+                'State',
+                'Male',
+                { type: 'string', role: 'tooltip' },
+                'Female',
+                { type: 'string', role: 'tooltip' }
+              ],
+              ...mostPopulousStates
+            ]}
             height='230px'
             options={{
               title: 'Most Populous States',
-              isStacked: true,
+              isStacked: true
             }}
           />
         </div>
-        
+
         <div className='ages-chart'>
           <Chart
             chartType='ColumnChart'
