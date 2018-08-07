@@ -13,36 +13,55 @@ const xml = (data)=>{
 const txt = (data) => {
   let lines = []
   Object.keys(data).forEach(key => {
+    //if its an array, need to format each index
     if(Array.isArray(data[key])){
       lines.push(`${key}:`)
+
       data[key] = data[key].forEach(item => {
+
         lines.push(`  ${item[0]}: ${((item[1] / data.total) * 100).toFixed(2)}%`)
+
       })
     }else{
+
       lines.push(`${key}: ${((data[key] / data.total) * 100).toFixed(2)}%`) 
+
     }
   })
-  fs.writeFileSync('analysys.txt', lines.join('\n'), (err, file)=>{
+  fs.writeFileSync('analysys.txt', lines.join('\n'), (err)=>{
+
     if(err) next(err);
+
   })
 }
+
 const json = (data)=>{
-  fs.writeFileSync('analysys.json', JSON.stringify(reformatter(data)), (err, file)=>{
+  fs.writeFileSync('analysys.json', JSON.stringify(reformatter(data)), (err)=>{
+
     if(err) next(err);
+
   })
 }
 
 const reformatter = (data) =>{
   Object.keys(data).forEach(key => {
-    if(key === "total"){
+    //need to leave 'total' alone because we use it to compare
+    if(key === 'total'){
+
       data[key] = data[key]
+
     }else if(Array.isArray(data[key])){
+
       data[key] = data[key].reduce((memo, item)=>{
+
         memo[item[0]] = `${((item[1] * 1 / data.total) * 100).toFixed(2)}%`
         return memo
+
       },{})
     }else{
+
       data[key] = `${((data[key]* 1 / data.total) * 100).toFixed(2)}%`
+      
     }
   })
   return data

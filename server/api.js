@@ -1,14 +1,15 @@
 const router = require('express').Router();
 const path = require('path');
+const fs = require('fs');
 
 // Processes uploaded files
 const multer  = require('multer');
 const upload = multer({ dest: 'uploads/'});
-const fs = require('fs');
 
-//analyser
+//analysis function
 const analyser = require('./analyser');
 
+//handles file creation for downloads
 const fileHandler = require('./fileHandler');
 
 router.post('/analyze/file', upload.single('file'), (req, res, next)=>{

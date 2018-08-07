@@ -8,7 +8,7 @@ class Form extends React.Component {
       showFile: true,
       fileName: '',
       validJSON: true,
-      fileType: false,
+      isJSONFile: false,
       file: '',
       JSONData: {},
       loading: false
@@ -25,8 +25,8 @@ class Form extends React.Component {
   selectFile(ev) {
     const file = ev.target.files[0];
     const fileName = file.name;
-    const fileType = file.type === 'application/json';
-    this.setState({ fileName, fileType, file });
+    const isJSONFile = file.type === 'application/json';
+    this.setState({ fileName, isJSONFile, file });
   }
   checkJSON(ev) {
     let JSONData;
@@ -40,8 +40,9 @@ class Form extends React.Component {
 
   onSubmit(ev) {
     ev.preventDefault();
-    this.setState({loading: true})
+    this.setState({ loading: true });
     const { showFile, file, JSONData } = this.state;
+    //add the file information to FormData to send
     let formData = new FormData();
     if (showFile && file) {
       formData.append('file', file);
@@ -58,11 +59,11 @@ class Form extends React.Component {
   }
 
   render() {
-    const { showFile, fileName, validJSON, fileType, loading } = this.state;
+    const { showFile, fileName, validJSON, isJSONFile, loading } = this.state;
     const { onClick, selectFile, checkJSON, onSubmit } = this;
     return (
       <div>
-        <h1>Analyze</h1>
+        <h1>Analyze Data</h1>
         <div className='jumbotron'>
           <form className='form-group' onSubmit={onSubmit}>
             <div className='btn-group form-row' role='group'>
@@ -104,12 +105,12 @@ class Form extends React.Component {
                 className='btn btn-success'
                 disabled={
                   (!showFile && !validJSON) ||
-                  (showFile && (!fileName && !fileType)) ||
+                  (showFile && (!fileName && !isJSONFile)) ||
                   loading
                 }>
                 Submit
               </button>
-              { loading ? ' Loading...' : ''}
+              {loading ? ' Loading...' : ''}
             </div>
           </form>
         </div>
