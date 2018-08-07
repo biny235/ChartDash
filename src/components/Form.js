@@ -10,7 +10,8 @@ class Form extends React.Component {
       validJSON: true,
       fileType: false,
       file: '',
-      JSONData: {}
+      JSONData: {},
+      loading: false
     };
     this.onClick = this.onClick.bind(this);
     this.selectFile = this.selectFile.bind(this);
@@ -39,6 +40,7 @@ class Form extends React.Component {
 
   onSubmit(ev) {
     ev.preventDefault();
+    this.setState({loading: true})
     const { showFile, file, JSONData } = this.state;
     let formData = new FormData();
     if (showFile && file) {
@@ -56,7 +58,7 @@ class Form extends React.Component {
   }
 
   render() {
-    const { showFile, fileName, validJSON, fileType } = this.state;
+    const { showFile, fileName, validJSON, fileType, loading } = this.state;
     const { onClick, selectFile, checkJSON, onSubmit } = this;
     return (
       <div>
@@ -102,10 +104,12 @@ class Form extends React.Component {
                 className='btn btn-success'
                 disabled={
                   (!showFile && !validJSON) ||
-                  (showFile && (!fileName && !fileType))
+                  (showFile && (!fileName && !fileType)) ||
+                  loading
                 }>
                 Submit
               </button>
+              { loading ? ' Loading...' : ''}
             </div>
           </form>
         </div>
