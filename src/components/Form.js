@@ -11,7 +11,8 @@ class Form extends React.Component {
       isJSONFile: false,
       file: '',
       JSONData: {},
-      loading: false
+      loading: false,
+      error: ''
     };
     this.onClick = this.onClick.bind(this);
     this.selectFile = this.selectFile.bind(this);
@@ -33,9 +34,9 @@ class Form extends React.Component {
     try {
       JSONData = JSON.parse(ev.target.value);
     } catch (e) {
-      return this.setState({ validJSON: false });
+      return this.setState({ error: "invalid JSON", validJSON: false });
     }
-    this.setState({ validJSON: true, JSONData });
+    this.setState({ validJSON: true, JSONData, error: '' });
   }
 
   onSubmit(ev) {
@@ -55,11 +56,14 @@ class Form extends React.Component {
       .then(data => {
         window.localStorage.setItem('data', JSON.stringify(data));
         this.props.history.push('/charts');
-      });
+      })
+      .catch(error => {
+        this.setState({error, loading:false})
+      })
   }
 
   render() {
-    const { showFile, fileName, validJSON, isJSONFile, loading } = this.state;
+    const { showFile, fileName, validJSON, isJSONFile, loading, error } = this.state;
     const { onClick, selectFile, checkJSON, onSubmit } = this;
     return (
       <div>
@@ -113,6 +117,7 @@ class Form extends React.Component {
               {loading ? ' Loading...' : ''}
             </div>
           </form>
+          {error ? <span className='alert alert-danger'> {error} </span> : ''}
         </div>
       </div>
     );
