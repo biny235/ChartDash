@@ -14,7 +14,7 @@ const txt = (data) => {
   let lines = []
   Object.keys(data).forEach(key => {
     if(key === 'total'){
-      lines.push(data.total)
+      lines.push(`Total :${data.total}`)
     }else if(key === 'mostPopulousStates'){
       //Most Populous State already has some calculations made for the tooltips. 
       lines.push(`${key}:`)
