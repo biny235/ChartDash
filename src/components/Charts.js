@@ -72,7 +72,6 @@ class Charts extends React.Component {
       total,
       fileType
     } = this.state;
-    console.log(mostPopulousStates)
     const { onClick, clear, onChange } = this;
     return (
       <div className='chart-grid'>
